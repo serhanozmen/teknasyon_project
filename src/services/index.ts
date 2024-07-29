@@ -85,13 +85,7 @@ const parseCollectedCoins = (
     }
 
     return collectedCoins.map((collectedCoin) => {
-        const claimDate = getDate(
-            sortDates(
-                collectedCoin.collectedCoins.map((d) => d.date),
-                user.timezone,
-            )[0],
-            user.timezone,
-        );
+        let claimDate = null;
         const claimStartDate = initialDate
             ? initialDate
                   .clone()
@@ -102,7 +96,15 @@ const parseCollectedCoins = (
                   .add(collectedCoin.dayIndex - 1, 'days')
                   .startOf('day');
         const claimEndDate = claimStartDate.clone().endOf('day');
-
+        if (initialDate != today) {
+            claimDate = getDate(
+                sortDates(
+                    collectedCoin.collectedCoins.map((d) => d.date),
+                    user.timezone,
+                )[0],
+                user.timezone,
+            );
+        }
         if (claimStartDate > today) {
             return {
                 title: `Day ${collectedCoin.dayIndex}`,
